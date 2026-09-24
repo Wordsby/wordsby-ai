@@ -1,0 +1,19 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // A site Wordsby hosts but didn't build: the client's files, served as they
+  // are. There is no build step, so the assets are the folder itself.
+  //
+  // The name here is replaced when the site is created, and a deploy passes
+  // the Worker name from the site's record anyway — so editing it changes
+  // nothing about where this deploys.
+  "name": "wordsby-ai",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    "directory": "./site",
+    // A client's site usually has its own 404.html. Without one, Cloudflare
+    // serves a plain not-found rather than the home page, which is what you
+    // want: a site that answers every URL with its home page looks broken to
+    // search engines.
+    "not_found_handling": "404-page"
+  }
+}

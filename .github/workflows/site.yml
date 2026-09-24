@@ -1,0 +1,34 @@
+name: Site
+
+# Checks every change. Wordsby deploys it.
+#
+# There is no build step: this repo holds a finished site, served as it is.
+# The job is still called `site`, because that is the check a site repo's
+# branch ruleset requires, alongside `deploy` from the Wordsby app.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: site-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  site:
+    name: site
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .node-version
+
+      # Only what breaks hosting is an error here: no home page, or a link to
+      # a file that isn't in the repo. Everything else is a warning, because
+      # the client wrote this site and it is theirs to change.
+      - name: Check
+        run: node scripts/check-hosted.mjs site
